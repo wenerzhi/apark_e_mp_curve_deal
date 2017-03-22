@@ -1,0 +1,62 @@
+package com.pns.helper
+
+import java.io.FileOutputStream
+import java.text.DecimalFormat
+
+import org.apache.poi.xssf.usermodel.XSSFWorkbook
+
+/**
+ * Created by lev on 2016/8/23.
+ */
+object common {
+  def getSqlStringFormat(string: String, splitChar: String): String = {
+    val strs = string.split(splitChar)
+    var re = ""
+    for (str: String <- strs) {
+      re = re + "'" + str + "',"
+    }
+    (re.substring(0, re.length - 1))
+  }
+
+  def doubleRound(double: Double): Double = {
+    var df: DecimalFormat = new DecimalFormat("#.0000")
+    (df.format(double).toDouble)
+  }
+
+  def doubleToInt(double: Double): Int = {
+    var df: DecimalFormat = new DecimalFormat("0")
+    (df.format(double).toInt)
+  }
+
+  def doubleArrayRound(arr: Array[Double]): Array[Double] = {
+    var arrNew: Array[Double] = new Array[Double](arr.length)
+    for (i: Int <- 0 to arr.length - 1) {
+      arrNew(i) = doubleRound(arr(i))
+    }
+    (arrNew)
+  }
+
+  def stringFormat(string: String): String = {
+    if (!string.isEmpty)
+      (string.replace("\t", "").replace("\n", "").replace("\r", "").trim)
+    else
+      ("")
+  }
+
+  def saveToExcel(array: Array[String], file: String, sheetIndex: Int): Unit = {
+    var book: XSSFWorkbook = new XSSFWorkbook("/home/result.xlsm")
+    var sheet1 = book.getSheetAt(sheetIndex)
+
+    for (i: Int <- 2 to 9) {
+      var row = sheet1.createRow(i)
+      for (j: Int <- 1 to 24) {
+        row.createCell(j).setCellValue(j)
+      }
+    }
+    var fileOut: FileOutputStream = new FileOutputStream("d:\\test.xlsm")
+    book.write(fileOut)
+    fileOut.flush();
+    fileOut.close();
+  }
+
+}
